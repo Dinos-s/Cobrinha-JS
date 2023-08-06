@@ -6,4 +6,4 @@ Clique no link abaixo para sentir essa nostlgia, mias moderna da net:
 
 [Vamos Jogar?](https://dinos-s.github.io/Cobrinha-JS/)
 
-![..](../assets/SnakeGame.gif)
+![..](./assets/SnakeGame.gif)
