@@ -4,4 +4,4 @@ O famoso jogo da cobrinha, do nostalgico celular tijolão da nokia, voltou e ago
 
 Clique no link abaixo para sentir essa nostlgia, mias moderna da net:
 
-![..](https://dinos-s.github.io/Cobrinha-JS/)
+[Vamos Jogar?](https://dinos-s.github.io/Cobrinha-JS/)
