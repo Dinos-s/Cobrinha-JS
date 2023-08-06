@@ -1,10 +1,20 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
+const score = document.querySelector('.score--value')
+const finalScore = document.querySelector('.final-score > span')
+const menu = document.querySelector('.menu-screen')
+const btnReplay = document.querySelector('.btn-replay')
+const audio = new Audio('../assets/audio.mp3')
 const size = 30
-const snake = [
-    {x:270, y:270},
+const initialPosition = {x:270, y:270}
+let snake = [
+    initialPosition
     // posisoes da cobrinha (corpo)
 ] // cobrinha do jogo
+const incrementScore = () => {
+    score.innerText = +score.innerText + 10;
+    // paontuação cada vez que se come a fruta
+}
 
 const randomNum = (min, max) => {
     return Math.round(Math.random() * (max - min) + min)
@@ -96,6 +106,54 @@ const grid = () => {
     }
 }
 
+// come / n a fruta
+const checkEat = () => {
+    const head = snake[snake.length - 1]
+
+    if(head.x == food.x && head.y == food.y){
+        incrementScore()
+        snake.push(head)
+        audio.play()
+
+        let x = randomPosition()
+        let y = randomPosition()
+
+        while(snake.find((position) => position.x == x && position.y == y)){
+            x = randomPosition()
+            y = randomPosition()
+        }
+
+        // recebe as positions do corpo da cobrinha
+        food.x = x
+        food.y = y
+        food.color = randomColor()
+    }
+}
+
+const collision = () => {
+    const head = snake[snake.length - 1]
+    const canvasLimit = canvas.width - size // 600 - 30
+    const neckIndex = snake.length - 2 // pescoço da cobrinha
+
+    const wallColision = (head.x < 0 || head.x > canvasLimit || head.y < 0 || head.y > canvasLimit)
+    
+    // cobra bate nela mesma
+    const selfColision = snake.find((position, index) => {
+        return index < neckIndex && position.x == head.x && position.y == head.y
+    })
+
+    if (wallColision || selfColision) {
+        gameOver()
+    }
+}
+
+const gameOver = () => {
+    direction = undefined
+    menu.style.display = "flex"
+    finalScore.innerText = score.innerText
+    canvas.style.filter = 'blur(2px)'
+}
+
 const gameLoop = () => {
     clearInterval(loopId)
     ctx.clearRect(0, 0, 600, 600) // limpando o canvas
@@ -103,6 +161,8 @@ const gameLoop = () => {
     drawFood()
     moveSnake()
     drawSnake()
+    checkEat()
+    collision()
 
     loopId = setInterval(() => {
         gameLoop() //função recuusiva
@@ -130,4 +190,12 @@ document.addEventListener('keydown', ({key}) => {
     if (key == 'ArrowLeft' &&  direction != 'right') {
         direction = 'left'
     }
+})
+
+btnReplay.addEventListener('click', () => {
+    score.innerText = '00'
+    menu.style.display = 'none'
+    canvas.style.filter = 'none'
+
+    snake = [initialPosition]
 })
